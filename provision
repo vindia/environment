@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+set -e
+
+if [ "$EUID" -ne "0" ] ; then
+  echo "Script must be run as root." >&2
+  exit 1
+fi
+
+echo "Updating system..."
+apt-get update
+apt-get upgrade
+
+echo "Reconfiguring default locales..."
+export LANGUAGE=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+locale-gen en_US.UTF-8
+dpkg-reconfigure locales
+
+echo "Installing build-essential..."
+apt-get -y install build-essential
+
+echo "Installing git..."
+if which git > /dev/null ; then
+  echo "git is already installed!"
+else
+  add-apt-repository ppa:git-core/ppa
+  apt-get update
+  apt-get -y install git
+  echo "Succesfully installed git!"
+fi
+
+echo "Installing vim..."
+if which vim > /dev/null ; then
+  echo "vim is already installed!"
+else
+  apt-get -y install vim
+  echo "Succesfully installed vim!"
+fi
+
+echo "Installing solarized color scheme for vim..."
+if [ -f /home/vagrant/.vim/colors/solarized.vim ] ; then
+  echo "solarized color scheme is already installed!"
+else
+  su - vagrant -c 'mkdir -p /home/vagrant/.vim/colors'
+  su - vagrant -c 'git clone https://github.com/altercation/vim-colors-solarized.git'
+  su - vagrant -c 'mv /home/vagrant/vim-colors-solarized/colors/solarized.vim /home/vagrant/.vim/colors'
+  rm -rf /home/vagrant/vim-colors-solarized
+  echo "Succesfully installed solarized color scheme!"
+fi
+
+echo "Installing system ruby..."
+if which ruby > /dev/null ; then
+  echo "ruby is already installed!"
+else
+  apt-get -y install ruby-dev
+  echo "Succesfully installed ruby!"
+fi
+
+echo "Installing chruby..."
+if [ -f /usr/local/bin/chruby-exec ] ; then
+  echo "chruby is already installed!"
+else
+  CHRUBY_VERSION="0.3.9"
+  echo "Downloading chruby $CHRUBY_VERSION..."
+  wget -O chruby-$CHRUBY_VERSION.tar.gz https://github.com/postmodern/chruby/archive/v$CHRUBY_VERSION.tar.gz
+  tar -xzvf chruby-$CHRUBY_VERSION.tar.gz
+  cd chruby-$CHRUBY_VERSION/
+  sudo make install
+  echo "Cleaning up installation files..."
+  cd ../
+  rm -rf chruby-$CHRUBY_VERSION/
+  rm chruby-$CHRUBY_VERSION.tar.gz
+  echo "Succesfully installed chruby!"
+fi
+
+echo "Installing ruby-install..."
+if [ -f /usr/local/bin/ruby-install ] ; then
+  echo "ruby-install is already installed!"
+else
+  RB_INSTALL_VERSION="0.5.0"
+  echo "Downloading ruby-install $RB_INSTALL_VERSION..."
+  wget -O ruby-install-$RB_INSTALL_VERSION.tar.gz https://github.com/postmodern/ruby-install/archive/v$RB_INSTALL_VERSION.tar.gz
+  tar -xzvf ruby-install-$RB_INSTALL_VERSION.tar.gz
+  cd ruby-install-$RB_INSTALL_VERSION/
+  sudo make install
+  echo "Cleaning up installation files..."
+  cd ../
+  rm -rf ruby-install-$RB_INSTALL_VERSION/
+  rm ruby-install-$RB_INSTALL_VERSION.tar.gz
+  echo "Succesfully installed ruby-install!"
+fi
+
+echo "Installing ruby with ruby-install..."
+if [ -d /home/vagrant/.rubies/ruby-* ] ; then
+  echo "ruby is already installed with ruby-install!"
+else
+  RUBY_VERSION="2.2.3"
+  su - vagrant -c "ruby-install ruby $RUBY_VERSION"
+  rm -rf /home/vagrant/src
+  echo "Succesfully installed ruby $RUBY_VERSION with ruby-install!"
+fi
+
+echo "Setting up dotfiles..."
+if [ -d /home/vagrant/.dotfiles ] ; then
+  echo "Updating dotfiles..."
+  su - vagrant -c 'cd /home/vagrant/.dotfiles && git pull origin master'
+else
+  echo "Installing dotfiles..."
+  su - vagrant -c 'git clone https://github.com/vindia/dotfiles.git /home/vagrant/.dotfiles'
+fi
+su - vagrant -c 'cd /home/vagrant/.dotfiles && ./install'
+cd /home/vagrant
+echo "Finished setting up dotfiles!"
+
+echo "Installing Rails..."
+if which rails > /dev/null ; then
+  echo "Rails is already installed!"
+else
+  su - vagrant -c 'gem install rails'
+  echo "Succesfully installed Rails!"
+fi
+
+echo "Installing mailcatcher..."
+if gem list | grep mailcatcher > /dev/null ; then
+  echo "mailcatcher is already installed!"
+else
+  apt-get -y install libsqlite3-dev
+  su - vagrant -c 'gem install mailcatcher'
+  echo "Succesfully installed mailcatcher!"
+fi
+
+echo "Installing nginx..."
+if which nginx > /dev/null ; then
+  echo "nginx is already installed"
+else
+  apt-get -y install nginx
+  echo "Successfully installed nginx!"
+fi
+
+echo "Installing php-fpm..."
+if which php5-fpm > /dev/null ; then
+  echo "php5-fpm is already installed"
+else
+  apt-get -y install php5-fpm
+  echo "Successfully installed php5-fpm!"
+fi
+
+echo "Installing MySQL..."
+if which mysql > /dev/null ; then
+  echo "MySQL is already installed"
+else
+  apt-get -y install mysql-server php5-mysql
+  echo "Successfully installed MySQL!"
+fi
