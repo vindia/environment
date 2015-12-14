@@ -8,7 +8,8 @@ fi
 
 echo "Updating system..."
 apt-get update
-apt-get upgrade
+apt-get -y upgrade
+apt-get -y autoremove
 
 echo "Reconfiguring default locales..."
 export LANGUAGE=en_US.UTF-8
