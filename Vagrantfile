@@ -11,7 +11,7 @@ Vagrant.configure(API_VERSION) do |config|
   config.ssh.forward_agent = true
   config.vm.provision :shell, path: 'provision'
   config.vm.synced_folder ".", "/vagrant", type: "rsync"
-  config.vm.synced_folder "~/code", "/code", type: "nfs"
+  config.vm.synced_folder "~/code", "/vindia", type: "nfs"
 
   config.vm.provider "virtualbox" do |v|
     host = RbConfig::CONFIG['host_os']
