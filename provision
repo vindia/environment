@@ -151,6 +151,6 @@ echo "Installing MySQL..."
 if which mysql > /dev/null ; then
   echo "MySQL is already installed"
 else
-  apt-get -y install mysql-server php5-mysql
+  apt-get -y install mysql-server-5.5 php5-mysql
   echo "Successfully installed MySQL!"
 fi
