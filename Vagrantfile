@@ -7,7 +7,7 @@ API_VERSION = 2
 Vagrant.configure(API_VERSION) do |config|
   config.vm.box = 'ubuntu/wily64'
   config.vm.hostname = 'vindia-dev'
-  config.vm.network 'private_network', ip: '192.168.47.83'
+  config.vm.network 'private_network', ip: '192.168.83.4'
   config.ssh.forward_agent = true
   config.vm.provision :shell, path: 'provision'
   config.vm.synced_folder ".", "/vagrant", type: "rsync"
