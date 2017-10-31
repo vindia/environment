@@ -93,10 +93,10 @@ else
 fi
 
 echo "Installing ruby with ruby-install..."
-if [ -d /home/vagrant/.rubies/ruby-* ] ; then
+if [ -d /home/vagrant/.rubies/ruby-2.3.5 ] ; then
   echo "ruby is already installed with ruby-install!"
 else
-  RUBY_VERSION="2.2.3"
+  RUBY_VERSION="2.3.5"
   su - vagrant -c "ruby-install ruby $RUBY_VERSION"
   rm -rf /home/vagrant/src
   echo "Succesfully installed ruby $RUBY_VERSION with ruby-install!"
