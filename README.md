@@ -4,7 +4,7 @@ My all purpose development environment. In Vagrant.
 For some projects I use a dedicated Vagrant environment to do development in, but this is my all purpose environment for quick hacks, small projects, etc.
 
 # Inside the box
-* Ubuntu 15.10 Wily Werewolf
+* Ubuntu 14.04 LTS Trusty Thar
 * vim
 * git
 * nginx
