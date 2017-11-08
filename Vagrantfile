@@ -5,7 +5,7 @@
 API_VERSION = 2
 
 Vagrant.configure(API_VERSION) do |config|
-  config.vm.box = 'ubuntu/wily64'
+  config.vm.box = 'ubuntu/trusty64'
   config.vm.hostname = 'vindia-dev'
   config.vm.network 'private_network', ip: '192.168.83.4'
   config.ssh.forward_agent = true
