@@ -154,3 +154,11 @@ else
   apt-get -y install mysql-server-5.5 php5-mysql
   echo "Successfully installed MySQL!"
 fi
+
+echo "Installing Heroku Toolbelt..."
+if which heroku > /dev/null ; then
+  echo "Heroku Toolbelt is already installed"
+else
+  wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+  echo "Successfully installed Heroku Toolbelt!"
+fi
